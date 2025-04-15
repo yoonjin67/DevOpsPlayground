@@ -1,0 +1,19 @@
+# allow-monitoring-nodeports.yaml
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-monitoring-nodeports
+spec:
+  endpointSelector: {}
+  ingress:
+  - fromEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "30001"
+        protocol: TCP
+      - port: "30002"
+        protocol: TCP
+      - port: "30003"
+        protocol: TCP
+

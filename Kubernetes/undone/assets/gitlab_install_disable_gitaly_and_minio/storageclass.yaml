@@ -1,0 +1,7 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: default
+provisioner: kubernetes.io/no-provisioner  # 동적 프로비저닝 없음
+volumeBindingMode: WaitForFirstConsumer  # PVC가 소비되기 전까지 PV 바인딩을 기다림
+
