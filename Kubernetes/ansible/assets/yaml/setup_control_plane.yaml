@@ -1,0 +1,36 @@
+- hosts: master
+  become: yes
+  tasks:
+    - name: Initialize the cluster
+      shell: kubeadm init --pod-network-cidr=10.244.0.0/16
+      args:
+        chdir: "/home/{{ user }}\n"
+        creates: cluster_init_master.log
+      vars:
+        user: "yjlee" # change into your username
+    - name: Create .kube Directory
+      become: yes
+      become_user: "{{ user }}"
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: 0755
+    - name: Copy admin.conf to User's kube config
+      become: yes
+      become_user: "{{ user }}"
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: "/home/{{ user }}/.kube/config"
+        remote_src: yes
+        owner: "{{ user }}"
+      vars:
+        user: "yjlee"
+    - name: Install Pod Network
+      become: yes
+      become_user: "{{ user }}"
+      shell: helm install cilium cilium/cilium --version 1.17.3 --namespace kube-system
+      args:
+        chdir: $HOME
+        creates:pod_network_setup_cilium.log
+      vars:
+        user: "yjlee"
