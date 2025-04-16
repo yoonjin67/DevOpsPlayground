@@ -1,0 +1,5 @@
+open editor
+edit /etc/ssh/sshd_config
+add:
+PermitRootLogin prohibit-password
+

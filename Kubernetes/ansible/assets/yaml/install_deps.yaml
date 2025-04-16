@@ -1,6 +1,8 @@
 - name: Kubernetes Dependency Setup
   hosts: all
   become: yes
+  become_user: "root"
+  become_method: sudo
   vars_files:
     - vault.yaml
   tasks:
@@ -22,56 +24,47 @@
 
     - name: Create an empty configuration for the CRI
       copy:
-        content: ""
         dest: /etc/sysctl.d/99-k8s-cri-setup.conf # CRI config is separately managed
-        force: no 
+        content: ""
+        mode: '0644'
 
-    - name: Configure IPV4 Forwarding and Bridge Persistently # ipv4 should be forwarded, bridge network should be supported
+    - name: Configure IPV4 Forwarding # ipv4 should be forwarded
       lineinfile:
         path: /etc/sysctl.d/99-k8s-cri-setup.conf
         line: "{{ item }}"
       with_items:
-        - "net.bridge.bridge-nf-call-iptables   = 1"
-        - "net.bridge.bridge-nf-call-ip6tables  = 1"
         - "net.ipv4.ip_forward                  = 1"
-
-    - name: Set bridge-nf-call-iptables
-      sysctl:
-        name: net.bridge.bridge-nf-call-iptables
-        value: 1
 
     - name: Set IPv4 Forwarding
       sysctl:
         name: net.ipv4.ip_forward
         value: 1
 
-
-    - name: Apply sysctl parameters
-      command: sysctl -p # do not use sysctl --system since it is outdated 
-
     - name: Install APT Transport HTTPS
       apt: 
         name: apt-transport-https
-      state: present
+        state: present
 
     - name: Install Podman 
       apt:
         name: podman
-      state: present
+        state: present
+
     - name: Setup Docker Compatibility
       apt:
         name: podman-docker # Using Default supported Podman instead of Docker CE
+        state: present
 
     - name: Install Containerd
       apt:
         name: containerd
-      state: present
+        state: present
 
     - name: Configure Systemd Cgroup Driver
       lineinfile:
         path: /etc/containerd/config.toml
         regexp: "SystemdCgroup = false"
-        line:   "SystemdCgroup = true" # Corresponds to: sed 's/SystemdCgroup\ =\ false/SystemdCgroup\ =\ true/'
+        line: "SystemdCgroup = true"
 
     - name: Enable the containerd service and start
       systemd:
@@ -80,14 +73,15 @@
         enabled: yes
         daemon-reload: yes
 
-    - name: Install Kubelet  # Installing K8S deps starts here. You should change pinning_verion to your desired version.
+    - name: Install Kubelet  # Installing K8S deps starts here.
       apt:
         name: "kubelet={{ pinning_version }}"
         state: present
       vars:
         pinning_version: "1.32.3"
+
     - name: Pin Kubelet
-      ansible.builtin.apt:
+      apt:
         name: "kubelet={{ pinning_version }}"
         state: present
         dpkg_options: 'Pin={{ pinning_version }}'
@@ -100,8 +94,9 @@
         state: present
       vars:
         pinning_version: "1.32.3"
+
     - name: Pin Kubectl
-      ansible.builtin.apt:
+      apt:
         name: "kubectl={{ pinning_version }}"
         state: present
         dpkg_options: 'Pin={{ pinning_version }}'
@@ -114,13 +109,15 @@
         state: present
       vars:
         pinning_version: "1.32.3"
+
     - name: Pin KubeADM
-      ansible.builtin.apt:
+      apt:
         name: "kubeadm={{ pinning_version }}"
         state: present
         dpkg_options: "Pin={{ pinning_version }}"
       vars:
         pinning_version: "1.32.3"
+
     - name: Enable the Kubelet Service
       service:
         name: kubelet
@@ -130,18 +127,25 @@
       modprobe:
         name: br_netfilter
         state: present
-    - name: Add br_netfilter persistently ## THIS PART IS IMPORTANT, or br_netfilter would not be loaded after cluster reboot
-      ansible.builtin.copy:
+
+    - name: Apply sysctl parameters
+      command: sysctl -p # do not use sysctl --system since it is outdated 
+
+    - name: Add br_netfilter persistently ## THIS PART IS IMPORTANT
+      copy:
         content: "br_netfilter\n"
-        dest:    "/etc/modules"
+        dest: "/etc/modules"
         mode: "a+"
         backup: yes
 
 - hosts: master
   become: yes
-  tasks: 
+  tasks:
     - name: Install Kubectl
       apt:
         name: kubectl={{ pinning_version }}
         state: present
         force: yes
+      vars:
+        pinning_version: "1.32.3"
+

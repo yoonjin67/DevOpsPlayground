@@ -39,4 +39,5 @@ sudo apt-get install ansible -y
 
 # Ansible needs basic Kubernetes setup to use kubectl.
 
+ansible-playbook "$(YAML "$ANSIBLE_PLAYGROUND")/install_deps.yaml" -i "$INVENTORY/kube_inventory" --ask-vault-pass
 ansible-playbook "$(YAML "$ANSIBLE_PLAYGROUND")/setup_control_plane.yaml" -i "$INVENTORY/kube_inventory" --ask-vault-pass
