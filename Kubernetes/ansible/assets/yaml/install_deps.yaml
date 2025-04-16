@@ -1,7 +1,7 @@
 - name: Kubernetes Dependency Setup
   hosts: all
   become: yes
-  vars_file:
+  vars_files:
     - vault.yaml
   tasks:
     - name: Updates

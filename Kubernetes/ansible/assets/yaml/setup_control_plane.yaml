@@ -1,6 +1,6 @@
 - hosts: master
   become: yes
-  vars_file:
+  vars_files:
     - vault.yaml
   tasks:
     - name: Initialize the cluster
