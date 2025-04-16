@@ -1,4 +1,8 @@
 [master]
-10.0.0.2
+192.168.0.2
 [workers]
-10.0.0.3
+192.168.0.3
+[all:vars]
+ansible_become=true
+ansible_become_method=sudo
+ansible_become_user=yjlee

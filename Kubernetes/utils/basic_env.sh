@@ -1,9 +1,13 @@
 #!/bin/bash
 export K8S_PLAYGROUND="$HOME/DevOpsPlayground/Kubernetes"
+export ANSIBLE_PLAYGROUND="$K8S_PLAYGROUND/ansible"
+export BASIC_SETUP="$K8S_PLAYGROUND/basic_setup"
+export INVENTORY="$ANSIBLE_PLAYGROUND/inventory"
 
 # Usage: SCRIPTS $K8S_PLAYGROUND/basic_init
 SCRIPTS() {
-	local folder="$1"
+	local path="$1"
+	local folder=$(dirname "$path")
 	echo "$folder/scripts"
 }
 

@@ -1,6 +1,9 @@
 #!/bin/bash
 # Args: debian or ubuntu supported
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 OPERATING_SYSTEM="$1"
+
 echo "$OPERATING_SYSTEM"
 
 sudo apt-get update -y
@@ -36,4 +39,4 @@ sudo apt-get install ansible -y
 
 # Ansible needs basic Kubernetes setup to use kubectl.
 
-bash "$(SCRIPTS "$K8S_PLAYGROUND/basic_init")/init.sh"
+ansible-playbook "$(YAML "$ANSIBLE_PLAYGROUND")/setup_control_plane.yaml" -i "$INVENTORY/kube_inventory" --ask-vault-pass
