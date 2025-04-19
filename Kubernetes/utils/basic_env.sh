@@ -2,6 +2,7 @@
 export K8S_PLAYGROUND="$HOME/DevOpsPlayground/Kubernetes"
 export ANSIBLE_PLAYGROUND="$K8S_PLAYGROUND/ansible"
 export BASIC_SETUP="$K8S_PLAYGROUND/basic_setup"
+export PROMETHEUS_PLAYGROUND="$K8S_PLAYGROUND/prometheus_and_grafana"
 export INVENTORY="$ANSIBLE_PLAYGROUND/inventory"
 
 # Usage: SCRIPTS $K8S_PLAYGROUND/basic_init
