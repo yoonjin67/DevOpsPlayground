@@ -12,8 +12,85 @@ This project showcases a set of practical scripts, tools, and configurations aim
 - **basic_setup/**: A collection of bash scripts for setting up the Kubernetes control plane, installing core tools (Cilium, Helm), and managing nodes and taints.
 - **modify_cilium_policy/**: Contains Kubernetes YAML files for modifying Cilium policies, such as exporting ports from the Cilium network.
 - **prometheus_and_grafana/**: Includes scripts for installing and setting up Prometheus and Grafana for Kubernetes monitoring.
-- **undone/**: In-progress features and scripts for installing and configuring GitLab, Redis, and Postgres, among others, which have not yet been fully completed.
 - **utils/**: Utility scripts for setting up the environment and managing Kubernetes-related tasks.
+...
+
+```bash
+.
+├── ansible
+│   ├── assets
+│   │   └── yaml
+│   │       ├── install_deps.yaml
+│   │       ├── setup_control_plane.yaml
+│   │       └── vault.yaml
+│   ├── inventory
+│   │   └── kube_inventory
+│   ├── README
+│   ├── scripts
+│   │   └── init_k8s_with_ansible.sh
+│   └── TODO
+├── basic_setup
+│   └── scripts
+│       ├── init_control_plane.sh
+│       ├── init.sh
+│       ├── install_cilium.sh
+│       ├── install_helm.sh
+│       ├── print_join_command.sh
+│       └── untaint.sh
+├── gitlab
+│   └── scripts
+│       ├── get_pw.sh
+│       └── install_gitlab.sh
+├── jenkins
+│   ├── read
+│   ├── scripts
+│   │   ├── get_pw.sh
+│   │   └── install_jenkins.sh
+│   └── yaml
+│       └── values.yaml
+├── loki
+│   ├── assets
+│   │   └── yaml
+│   │       ├── grafana-configmap.yaml
+│   │       ├── loki-grafana.yaml
+│   │       ├── loki.yaml
+│   │       ├── persistence
+│   │       │   ├── pvc.yaml
+│   │       │   ├── pv.yaml
+│   │       │   └── storageclass.yaml
+│   │       └── schemaconfig.yaml
+│   └── scripts
+├── metallb
+│   ├── scripts
+│   │   └── metallb_setup.sh
+│   └── yaml
+│       └── gitlab
+│           ├── metallb_ip_pool.yaml
+│           └── metallb_l2_advertisement.yaml
+├── modify_cilium_policy
+│   └── basic_port_export
+│       └── assets
+│           └── yaml
+│               ├── export_port_from_cilium.yaml
+│               └── loki_ingress.yaml
+├── nfs_setup
+│   ├── setup-master-helm.sh
+│   └── setup.sh
+├── prometheus_and_grafana
+│   ├── assets
+│   │   └── yaml
+│   │       └── log.txt
+│   ├── install_prometheus.sh
+│   └── scripts
+│       ├── add_incus_monitor.sh
+│       ├── add_secret.sh
+│       ├── install_kube_ops_view.sh
+│       └── install_prometheus.sh
+└── utils
+    └── basic_env.sh
+
+```
+This is ALL structure of DevOpsPlayground
 
 ---
 
@@ -71,19 +148,15 @@ This project demonstrates several key DevOps practices, including:
 - **Cilium Networking Setup**: CNI plugin installation and port export policy.
 - **Prometheus & Grafana**: Installation scripts for cluster monitoring.
 - **Ansible Playbooks**: Defined and tested deployment scripts for cluster configuration.
-
-### Ongoing:
-
 - **GitLab Configuration**: Setting up GitLab with persistent storage and proper configuration for large-scale deployments.
-- **Full CI/CD Pipeline**: Still in the process of integrating CI/CD for automatic build and deployment.
 - **Cilium Port Export**: Finalizing the Cilium policy export for security and networking.
+### Ongoing
+- **Full CI/CD Pipeline**: Still in the process of integrating CI/CD for automatic build and deployment.
 
 ---
 
 ## 📝 Future Improvements
 
-- Completion of the GitLab setup and integration into the CI/CD pipeline.
-- Full automation of monitoring stack using Prometheus, Grafana, and custom alerts.
 - Completion of Cilium export logic to allow more refined Kubernetes networking and security configurations.
 
 ---
@@ -101,6 +174,5 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 ---
 
 ### Notes:
-- **Undone** folder: Contains the "undone" scripts and configurations that are not yet fully functional.
 - For the most part, the setup should work for Kubernetes on Linux-based systems but may need adjustments for different environments or specific use cases.
 
