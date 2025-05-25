@@ -1,17 +1,3 @@
-# allow-monitoring-nodeports.yaml
-apiVersion: "cilium.io/v2"
-kind: CiliumNetworkPolicy
-metadata:
-  name: allow-monitoring-nodeports
-spec:
-  endpointSelector: {}
-  ingress:
-  - fromEntities:
-    - world
-    toPorts:
-    - ports:
-      - port: "30001"
-        protocol: TCP
-      - port: "30002"
-        protocol: TCP
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:66acd0e24ec2da533ec3029f510a0d21b4bea230654ba28883b9e0af514e56a0
+size 360

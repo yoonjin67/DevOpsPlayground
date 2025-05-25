@@ -1,5 +1,3 @@
-open editor
-edit /etc/ssh/sshd_config
-add:
-PermitRootLogin prohibit-password
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:e14623a43982b18df24c8ade2ef5363a50a56e95af2c1f88a16af72d444aa7cd
+size 120

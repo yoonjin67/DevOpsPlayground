@@ -1,9 +1,3 @@
-[master]
-192.168.0.2
-[workers]
-192.168.0.3
-[all:vars]
-ansible_become=true
-ansible_become_method=sudo
-ansible_become_user=root
-ansible_user=root
+version https://git-lfs.github.com/spec/v1
+oid sha256:49ea87e2db8e74d063e847b1fbe59c1ce51b86fe8a0b54e1f5e32a19e338b76a
+size 144
