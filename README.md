@@ -2,6 +2,7 @@
 # Kubernetes Setup and DevOps Practices
 
 This project showcases a set of practical scripts, tools, and configurations aimed at setting up and managing a Kubernetes (K8s) environment with associated DevOps technologies.
+Basically, this project depends on Helm Charts. Although Some parts are deployed via Menifests, huge service like GitLab is deployed via Helm Upgrade.
 
 ---
 
@@ -11,85 +12,131 @@ This project showcases a set of practical scripts, tools, and configurations aim
 - **ansible/**: Contains Ansible playbooks and inventory for setting up and managing Kubernetes clusters, along with related configurations for Vault and other dependencies.
 - **basic_setup/**: A collection of bash scripts for setting up the Kubernetes control plane, installing core tools (Cilium, Helm), and managing nodes and taints.
 - **modify_cilium_policy/**: Contains Kubernetes YAML files for modifying Cilium policies, such as exporting ports from the Cilium network.
+- **jenkins/**: Contains Jenkins Installation script via Helm
 - **prometheus_and_grafana/**: Includes scripts for installing and setting up Prometheus and Grafana for Kubernetes monitoring.
 - **utils/**: Utility scripts for setting up the environment and managing Kubernetes-related tasks.
-...
-
+- **metallb/**: Basic setup for metallb
+- **gitlab/**: Contains GitLab installation script via helm
+#### Shortcuts
 ```bash
-.
-├── ansible
-│   ├── assets
-│   │   └── yaml
-│   │       ├── install_deps.yaml
-│   │       ├── setup_control_plane.yaml
-│   │       └── vault.yaml
-│   ├── inventory
-│   │   └── kube_inventory
-│   ├── README
-│   ├── scripts
-│   │   └── init_k8s_with_ansible.sh
-│   └── TODO
-├── basic_setup
-│   └── scripts
-│       ├── init_control_plane.sh
-│       ├── init.sh
-│       ├── install_cilium.sh
-│       ├── install_helm.sh
-│       ├── print_join_command.sh
-│       └── untaint.sh
-├── gitlab
-│   └── scripts
-│       ├── get_pw.sh
-│       └── install_gitlab.sh
-├── jenkins
-│   ├── read
-│   ├── scripts
-│   │   ├── get_pw.sh
-│   │   └── install_jenkins.sh
-│   └── yaml
-│       └── values.yaml
-├── loki
-│   ├── assets
-│   │   └── yaml
-│   │       ├── grafana-configmap.yaml
-│   │       ├── loki-grafana.yaml
-│   │       ├── loki.yaml
-│   │       ├── persistence
-│   │       │   ├── pvc.yaml
-│   │       │   ├── pv.yaml
-│   │       │   └── storageclass.yaml
-│   │       └── schemaconfig.yaml
-│   └── scripts
-├── metallb
-│   ├── scripts
-│   │   └── metallb_setup.sh
-│   └── yaml
-│       └── gitlab
-│           ├── metallb_ip_pool.yaml
-│           └── metallb_l2_advertisement.yaml
-├── modify_cilium_policy
-│   └── basic_port_export
-│       └── assets
-│           └── yaml
-│               ├── export_port_from_cilium.yaml
-│               └── loki_ingress.yaml
-├── nfs_setup
-│   ├── setup-master-helm.sh
-│   └── setup.sh
-├── prometheus_and_grafana
-│   ├── assets
-│   │   └── yaml
-│   │       └── log.txt
-│   ├── install_prometheus.sh
-│   └── scripts
-│       ├── add_incus_monitor.sh
-│       ├── add_secret.sh
-│       ├── install_kube_ops_view.sh
-│       └── install_prometheus.sh
-└── utils
-    └── basic_env.sh
+#!/bin/bash
+export K8S_PLAYGROUND="$HOME/DevOpsPlayground/Kubernetes"
+export ANSIBLE_PLAYGROUND="$K8S_PLAYGROUND/ansible"
+export BASIC_SETUP="$K8S_PLAYGROUND/basic_setup"
+export PROMETHEUS_PLAYGROUND="$K8S_PLAYGROUND/prometheus_and_grafana"
+export INVENTORY="$ANSIBLE_PLAYGROUND/inventory"
 
+# Usage: SCRIPTS $K8S_PLAYGROUND/basic_init
+SCRIPTS() {
+        local path="$1"
+        local folder=$(dirname "$path")
+        echo "$folder/scripts"
+}
+
+# Usage: ASSETS $K8S_PLAYGROUND/basic_init
+ASSETS() {
+        local folder="$1"
+        echo "$folder/assets"
+}
+
+# Usage: YAML $K8S_PLAYGROUND/basic_init
+YAML() {
+        local folder="$1"
+        local assets_path=$(ASSETS "$folder")
+        echo "$assets_path/yaml"
+}
 ```
+This has shortcuts at utils/basic\_env.sh.
+You can manage your folder with consistent grammar via this shortcuts.
+
+##### e.g, if you want to add new environment variable
+```bash
+export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
+```
+
+
+#### Directory Structure
+```bash
+...
+.
+├── Kubernetes
+│   ├── ansible
+│   │   ├── README
+│   │   ├── TODO
+│   │   ├── assets
+│   │   │   └── yaml
+│   │   │       ├── install_deps.yaml
+│   │   │       ├── setup_control_plane.yaml
+│   │   │       └── vault.yaml
+│   │   ├── inventory
+│   │   │   └── kube_inventory
+│   │   └── scripts
+│   │       └── init_k8s_with_ansible.sh
+│   ├── basic_setup
+│   │   └── scripts
+│   │       ├── init.sh
+│   │       ├── init_control_plane.sh
+│   │       ├── install_cilium.sh
+│   │       ├── install_helm.sh
+│   │       ├── print_join_command.sh
+│   │       └── untaint.sh
+│   ├── gitlab
+│   │   └── scripts
+│   │       ├── README.md
+│   │       ├── get_pw.sh
+│   │       ├── install_gitlab.sh
+│   │       └── setup_env.sh
+│   ├── jenkins
+│   │   ├── scripts
+│   │   │   ├── get_pw.sh
+│   │   │   └── install_jenkins.sh
+│   │   └── yaml
+│   │       └── values.yaml
+│   ├── loki
+│   │   ├── assets
+│   │   │   └── yaml
+│   │   │       ├── grafana-configmap.yaml
+│   │   │       ├── loki-grafana.yaml
+│   │   │       ├── loki.yaml
+│   │   │       ├── persistence
+│   │   │       │   ├── pv.yaml
+│   │   │       │   ├── pvc.yaml
+│   │   │       │   └── storageclass.yaml
+│   │   │       └── schemaconfig.yaml
+│   │   └── scripts
+│   ├── metallb
+│   │   ├── scripts
+│   │   │   └── metallb_setup.sh
+│   │   └── yaml
+│   │       └── gitlab
+│   │           ├── metallb_ip_pool.yaml
+│   │           └── metallb_l2_advertisement.yaml
+│   ├── modify_cilium_policy
+│   │   └── basic_port_export
+│   │       └── assets
+│   │           └── yaml
+│   │               ├── export_port_from_cilium.yaml
+│   │               └── loki_ingress.yaml
+│   ├── nfs_setup
+│   │   ├── setup-master-helm.sh
+│   │   └── setup.sh
+│   ├── prometheus_and_grafana
+│   │   ├── assets
+│   │   │   └── yaml
+│   │   │       └── log.txt
+│   │   ├── install_prometheus.sh
+│   │   └── scripts
+│   │       ├── add_incus_monitor.sh
+│   │       ├── add_secret.sh
+│   │       ├── install_kube_ops_view.sh
+│   │       └── install_prometheus.sh
+│   └── utils
+│       └── basic_env.sh
+└── README.md
+
+33 directories, 43 files
+```
+
 This is ALL structure of DevOpsPlayground
 
 ---
