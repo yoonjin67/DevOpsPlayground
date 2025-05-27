@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:10bb5b70b2382765b43115686a8768bcf45539f871c7cd1fc986053af2c463da
-size 158
+#!/bin/bash
+helm repo add christianhuth https://charts.christianhuth.de
+helm repo update
+helm install kube-ops-view christianhuth/kube-ops-view -n monitoring

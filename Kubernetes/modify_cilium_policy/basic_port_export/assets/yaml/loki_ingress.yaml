@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:180aed704996a56a7d702c070bfb0b79c07e773d300a9b16c7d024bf798f2843
-size 815
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-grafana-to-loki-tcp-ingress
+  namespace: monitoring # Where the Loki service and pods are located
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: loki # Selects the Loki pods based on their label
+  ingress: # Defines rules for incoming traffic to the selected pods
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring # Selects the namespace where Grafana pods are running
+      podSelector:
+        matchLabels:
+          helm.sh/chart: grafana-8.12.1 # Selects the Grafana pods based on their label (replace with your actual Grafana pod label)
+    ports:
+    - protocol: TCP
+      port: 3100 # Allows TCP traffic on port 3100, which is the default Loki HTTP port

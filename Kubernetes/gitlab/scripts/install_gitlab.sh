@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4c544a81a133885859412870af09e2812f92896d92be66decc9f0af47fae6c34
-size 386
+#!/bin/bash
+helm repo add gitlab https://charts.gitlab.io/
+helm repo update
+kubectl create ns gitlab
+helm upgrade --install gitlab gitlab/gitlab \
+  --timeout 600s \
+  --set global.hosts.domain=$YOUR_DOMAIN \
+  --set global.hosts.externalIP=$YOUR_PUBLIC_IP \
+  --set certmanager-issuer.email=$YOUR_EMAIL \
+  --set gitlab.gitlab-rails.initialRootEmail=$YOUR_EMAIL \
+  --namespace gitlab

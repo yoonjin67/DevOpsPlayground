@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0fffc89f45b2b0a12cb76333a4de3c04cb5c3ac264828fc4ce7e4e0732b3ca90
-size 258
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: loki-storageclass
+provisioner: kubernetes.io/host-path
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+parameters:
+  path: /var/lib/kubelet/volumes/loki-dynamic

@@ -1,3 +1,26 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9d25b0c8f76d2c1f94c0dc1b2566ebca20dbbdd5413d765b1e9112637201dff0
-size 659
+#!/bin/bash
+export K8S_PLAYGROUND="$HOME/DevOpsPlayground/Kubernetes"
+export ANSIBLE_PLAYGROUND="$K8S_PLAYGROUND/ansible"
+export BASIC_SETUP="$K8S_PLAYGROUND/basic_setup"
+export PROMETHEUS_PLAYGROUND="$K8S_PLAYGROUND/prometheus_and_grafana"
+export INVENTORY="$ANSIBLE_PLAYGROUND/inventory"
+
+# Usage: SCRIPTS $K8S_PLAYGROUND/basic_init
+SCRIPTS() {
+	local path="$1"
+	local folder=$(dirname "$path")
+	echo "$folder/scripts"
+}
+
+# Usage: ASSETS $K8S_PLAYGROUND/basic_init
+ASSETS() {
+	local folder="$1"
+	echo "$folder/assets"
+}
+
+# Usage: YAML $K8S_PLAYGROUND/basic_init
+YAML() {
+	local folder="$1"
+	local assets_path=$(ASSETS "$folder")
+	echo "$assets_path/yaml"
+}

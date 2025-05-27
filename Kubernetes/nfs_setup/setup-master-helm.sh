@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1bd486a9faceebe2581469f1e3cfe9cf56c4304045964ce502c4aee6c9cbc958
-size 424
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+helm update
+helm install nfs-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+    --set nfs.server=$YOUR_NFS_SERVER_IP \
+    --set nfs.path=/mnt/k8s-storage-class \
+    --set storageClass.defaultClass=true \
+    --set storageClass.reclaimPolicy=Delete
+sudo apt install -y nfs-common

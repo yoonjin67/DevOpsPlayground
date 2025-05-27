@@ -1,3 +1,52 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:93c4c74fd425fa1cd14870624c52c2be9551a0e21460ca36382c3a5e057f9bb4
-size 1358
+- hosts: master
+  become: yes
+  become_user: "root"
+  become_method: sudo
+  vars:
+    ansible_user: "root"
+  vars_files:
+    - vault.yaml
+  tasks:
+    - name: Initialize the cluster
+      shell: kubeadm init --pod-network-cidr=10.244.0.0/16
+      args:
+        creates: cluster_init_master.log
+
+    - name: Create .kube Directory
+      file:
+        path: "/home/{{ user }}/.kube"
+        state: directory
+        mode: 0755
+      vars:
+        user: "yjlee"
+
+    - name: Copy admin.conf to User's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: "/home/{{ user }}/.kube/config"
+        remote_src: yes
+        owner: "{{ user }}"
+      vars:
+        user: "yjlee"
+
+    - name: Add Cilium Helm Repository
+      become: yes
+      become_user: "{{ user }}"
+      command: helm repo add cilium https://helm.cilium.io/
+      args:
+        creates: "/home/{{ user }}/.local/share/helm/repositories/cilium-index.yaml"
+
+    - name: Update Helm Repositories
+      become: yes
+      become_user: "{{ user }}"
+      command: helm repo update
+
+    - name: Install Pod Network
+      become: yes
+      become_user: "{{ user }}"
+      shell: helm install cilium cilium/cilium --version 1.17.2 --namespace kube-system
+      args:
+        chdir: "/home/{{ user }}"
+        creates: pod_network_setup_cilium.log
+      vars:
+        user: "yjlee"

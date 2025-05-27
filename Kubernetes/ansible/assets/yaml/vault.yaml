@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5babd449d960718caf6a37410cd24e2d8d9d0a8ba0092a925e9d2e17baad73b3
-size 32
+ansible_become_pass: "password"

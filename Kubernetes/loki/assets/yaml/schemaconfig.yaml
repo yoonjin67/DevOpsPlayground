@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9f0f11cf404bc0888f3b02617d70d3105d3ed43e2cc8a436250b64b6b18189e6
-size 418
+loki:
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: loki-storageclass # StorageClass 이름 확인
+    accessModes:
+      - ReadWriteOnce
+  schemaConfig:
+    configs:
+      - from: "2020-10-24"
+        store: boltdb-shipper
+        object_store:
+          config:
+            directory: /var/lib/loki/index
+        schema: v11
+        index:
+          prefix: loki_index_
+          period: 24h
