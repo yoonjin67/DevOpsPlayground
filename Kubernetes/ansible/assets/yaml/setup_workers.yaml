@@ -1,0 +1,16 @@
+- hosts: workers
+  become: yes
+  become_user: "root"
+  become_method: sudo
+  vars:
+    user: "root"
+  tasks:
+    - name: Join pods to cluster
+      ansible.builtin.shell: "{{ hostvars[groups['master'][0]].kube_join_command }}"
+      args:
+        creates: /etc/kubernetes/kubelet.conf
+  
+
+      
+
+

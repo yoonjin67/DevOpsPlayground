@@ -1,0 +1,2 @@
+- import_playbook: setup_control_plane.yaml
+- import_playbook: setup_workers.yaml

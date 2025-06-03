@@ -3,7 +3,7 @@
   become_user: "root"
   become_method: sudo
   vars:
-    ansible_user: "root"
+    user: "yjlee"
   vars_files:
     - vault.yaml
   tasks:
@@ -17,8 +17,6 @@
         path: "/home/{{ user }}/.kube"
         state: directory
         mode: 0755
-      vars:
-        user: "yjlee"
 
     - name: Copy admin.conf to User's kube config
       copy:
@@ -26,8 +24,12 @@
         dest: "/home/{{ user }}/.kube/config"
         remote_src: yes
         owner: "{{ user }}"
-      vars:
-        user: "yjlee"
+    - name: Set ownership on kube config
+      ansible.builtin.file:
+        path: "/home/{{ user }}/.kube/config"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode : "0400"
 
     - name: Add Cilium Helm Repository
       become: yes
@@ -41,12 +43,13 @@
       become_user: "{{ user }}"
       command: helm repo update
 
-    - name: Install Pod Network
-      become: yes
-      become_user: "{{ user }}"
-      shell: helm install cilium cilium/cilium --version 1.17.2 --namespace kube-system
-      args:
-        chdir: "/home/{{ user }}"
-        creates: pod_network_setup_cilium.log
-      vars:
-        user: "yjlee"
+    - name: Get kubeadm join command from master
+      ansible.builtin.shell: "kubeadm token create --print-join-command"
+      register: join_command_result
+      run_once: true
+      changed_when: false
+        
+    - name: Store join command
+      ansible.builtin.set_fact:
+        kube_join_command: "{{ join_command_result.stdout }}"
+        run_once: true

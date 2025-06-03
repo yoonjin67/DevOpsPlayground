@@ -1,0 +1,13 @@
+- hosts: master
+  become: yes
+  become_user: "yjlee"
+  tasks:
+    - name: Install Pod Network
+      shell: helm install cilium cilium/cilium --namespace kube-system
+      args:
+        creates: pod_network_setup_cilium.log
+      environment:
+        KUBECONFIG: "/home/{{ user }}/.kube/config"
+      vars:
+        user: "yjlee"
+
