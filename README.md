@@ -57,7 +57,6 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 
 #### Directory Structure
 ```bash
-...
 .
 ├── Kubernetes
 │   ├── ansible
@@ -65,8 +64,11 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 │   │   ├── TODO
 │   │   ├── assets
 │   │   │   └── yaml
+│   │   │       ├── install_cilium.yaml
 │   │   │       ├── install_deps.yaml
+│   │   │       ├── setup_clusters.yaml
 │   │   │       ├── setup_control_plane.yaml
+│   │   │       ├── setup_workers.yaml
 │   │   │       └── vault.yaml
 │   │   ├── inventory
 │   │   │   └── kube_inventory
@@ -85,13 +87,17 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 │   │       ├── README.md
 │   │       ├── get_pw.sh
 │   │       ├── install_gitlab.sh
-│   │       └── setup_env.sh
+│   │       └── setup_env.sh # be sure to edit this to fit your env
 │   ├── jenkins
-│   │   ├── scripts
-│   │   │   ├── get_pw.sh
-│   │   │   └── install_jenkins.sh
-│   │   └── yaml
-│   │       └── values.yaml
+│   │   ├── assets
+│   │   │   └── yaml
+│   │   │       └── values.yaml
+│   │   └── scripts
+│   │       ├── get_pw.sh
+│   │       └── install_jenkins.sh
+│   ├── kube_ops_view
+│   │   └── scripts
+│   │       └── install_kube_ops_view.sh
 │   ├── loki
 │   │   ├── assets
 │   │   │   └── yaml
@@ -118,26 +124,42 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 │   │               ├── export_port_from_cilium.yaml
 │   │               └── loki_ingress.yaml
 │   ├── nfs_setup
-│   │   ├── setup-master-helm.sh
-│   │   └── setup.sh
+│   │   └── scripts
+│   │       ├── setup-master-helm.sh # setup environment variable before execution
+│   │       └── setup.sh
 │   ├── prometheus_and_grafana
-│   │   ├── assets
-│   │   │   └── yaml
-│   │   │       └── log.txt
-│   │   ├── install_prometheus.sh
 │   │   └── scripts
 │   │       ├── add_incus_monitor.sh
 │   │       ├── add_secret.sh
-│   │       ├── install_kube_ops_view.sh
+│   │       ├── get_pw.sh
 │   │       └── install_prometheus.sh
 │   └── utils
 │       └── basic_env.sh
 └── README.md
 
-33 directories, 43 files
+35 directories, 44 files
+
+```
+#### 🗨️ Total Code Lines
+
+```bash
+      45 text files.
+      41 unique files.
+       5 files ignored.
+
+github.com/AlDanial/cloc v 1.98  T=0.02 s (2219.6 files/s, 267649.0 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+YAML                            18             90           1812           2526
+Bourne Shell                    21             37             24            210
+Markdown                         2             44              0            201
+-------------------------------------------------------------------------------
+SUM:                            41            171           1836           2937
+-------------------------------------------------------------------------------
 ```
 
-This is ALL structure of DevOpsPlayground
+
 
 ---
 
