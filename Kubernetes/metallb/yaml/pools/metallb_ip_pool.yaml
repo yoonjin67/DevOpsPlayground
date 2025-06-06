@@ -1,7 +1,7 @@
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: gitlab-metallb-pool
+  name: kubernetes-metallb-pool
   namespace: metallb-system
 spec:
   addresses:

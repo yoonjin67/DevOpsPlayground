@@ -17,6 +17,8 @@ Basically, this project depends on Helm Charts. Although Some parts are deployed
 - **utils/**: Utility scripts for setting up the environment and managing Kubernetes-related tasks.
 - **metallb/**: Basic setup for metallb
 - **gitlab/**: Contains GitLab installation script via helm
+#### Known Errors
+*Ansible initialized k8s cluster is unstable. There would be some permissions problem while making initial profiles; any pull requests are welcomed.*
 #### Shortcuts
 ```bash
 #!/bin/bash
@@ -57,105 +59,106 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 
 #### Directory Structure
 ```bash
-.
-├── Kubernetes
-│   ├── ansible
-│   │   ├── README
-│   │   ├── TODO
-│   │   ├── assets
-│   │   │   └── yaml
-│   │   │       ├── install_cilium.yaml
-│   │   │       ├── install_deps.yaml
-│   │   │       ├── setup_clusters.yaml
-│   │   │       ├── setup_control_plane.yaml
-│   │   │       ├── setup_workers.yaml
-│   │   │       └── vault.yaml
-│   │   ├── inventory
-│   │   │   └── kube_inventory
-│   │   └── scripts
-│   │       └── init_k8s_with_ansible.sh
-│   ├── basic_setup
-│   │   └── scripts
-│   │       ├── init.sh
-│   │       ├── init_control_plane.sh
-│   │       ├── install_cilium.sh
-│   │       ├── install_helm.sh
-│   │       ├── print_join_command.sh
-│   │       └── untaint.sh
-│   ├── gitlab
-│   │   └── scripts
-│   │       ├── README.md
-│   │       ├── get_pw.sh
-│   │       ├── install_gitlab.sh
-│   │       └── setup_env.sh # be sure to edit this to fit your env
-│   ├── jenkins
-│   │   ├── assets
-│   │   │   └── yaml
-│   │   │       └── values.yaml
-│   │   └── scripts
-│   │       ├── get_pw.sh
-│   │       └── install_jenkins.sh
-│   ├── kube_ops_view
-│   │   └── scripts
-│   │       └── install_kube_ops_view.sh
-│   ├── loki
-│   │   ├── assets
-│   │   │   └── yaml
-│   │   │       ├── grafana-configmap.yaml
-│   │   │       ├── loki-grafana.yaml
-│   │   │       ├── loki.yaml
-│   │   │       ├── persistence
-│   │   │       │   ├── pv.yaml
-│   │   │       │   ├── pvc.yaml
-│   │   │       │   └── storageclass.yaml
-│   │   │       └── schemaconfig.yaml
-│   │   └── scripts
-│   ├── metallb
-│   │   ├── scripts
-│   │   │   └── metallb_setup.sh
+Kubernetes/
+├── ansible
+│   ├── README
+│   ├── TODO
+│   ├── assets
 │   │   └── yaml
-│   │       └── gitlab
-│   │           ├── metallb_ip_pool.yaml
-│   │           └── metallb_l2_advertisement.yaml
-│   ├── modify_cilium_policy
-│   │   └── basic_port_export
-│   │       └── assets
-│   │           └── yaml
-│   │               ├── export_port_from_cilium.yaml
-│   │               └── loki_ingress.yaml
-│   ├── nfs_setup
-│   │   └── scripts
-│   │       ├── setup-master-helm.sh # setup environment variable before execution
-│   │       └── setup.sh
-│   ├── prometheus_and_grafana
-│   │   └── scripts
-│   │       ├── add_incus_monitor.sh
-│   │       ├── add_secret.sh
-│   │       ├── get_pw.sh
-│   │       └── install_prometheus.sh
-│   └── utils
-│       └── basic_env.sh
-└── README.md
+│   │       ├── install_cilium.yaml
+│   │       ├── install_deps.yaml
+│   │       ├── setup_clusters.yaml
+│   │       ├── setup_control_plane.yaml
+│   │       ├── setup_workers.yaml
+│   │       └── vault.yaml
+│   ├── inventory
+│   │   └── kube_inventory
+│   └── scripts
+│       └── init_k8s_with_ansible.sh
+├── basic_setup
+│   └── scripts
+│       ├── init.sh
+│       ├── init_control_plane.sh
+│       ├── install_cilium.sh
+│       ├── install_helm.sh
+│       ├── print_join_command.sh
+│       └── untaint.sh
+├── gitlab
+│   └── scripts
+│       ├── README.md
+│       ├── get_pw.sh
+│       ├── install_gitlab.sh
+│       └── setup_env.sh
+├── jenkins
+│   ├── assets
+│   │   └── yaml
+│   │       └── values.yaml
+│   └── scripts
+│       ├── get_pw.sh
+│       └── install_jenkins.sh
+├── kube_ops_view
+│   └── scripts
+│       └── install_kube_ops_view.sh
+├── loki
+│   ├── assets
+│   │   └── yaml
+│   │       ├── grafana-configmap.yaml
+│   │       ├── loki-grafana.yaml
+│   │       ├── loki.yaml
+│   │       ├── persistence
+│   │       │   ├── pv.yaml
+│   │       │   ├── pvc.yaml
+│   │       │   └── storageclass.yaml
+│   │       └── schemaconfig.yaml
+│   └── scripts
+├── metallb
+│   ├── scripts
+│   │   └── metallb_setup.sh
+│   └── yaml
+│       └── pools
+│           ├── metallb_ip_pool.yaml
+│           └── metallb_l2_advertisement.yaml
+├── modify_cilium_policy
+│   └── basic_port_export
+│       └── assets
+│           └── yaml
+│               ├── export_port_from_cilium.yaml
+│               └── loki_ingress.yaml
+├── nfs_setup
+│   └── scripts
+│       ├── setup-master-helm.sh
+│       └── setup.sh
+├── prometheus_and_grafana
+│   └── scripts
+│       ├── add_incus_monitor.sh
+│       ├── add_secret.sh
+│       ├── get_pw.sh
+│       └── install_prometheus.sh
+├── tolerate_pod_allocation
+│   ├── README.md
+│   └── untaint.sh
+└── utils
+    └── basic_env.sh
 
-35 directories, 44 files
+35 directories, 45 files
 
 ```
 #### 🗨️ Total Code Lines
 
 ```bash
-      45 text files.
-      41 unique files.
+      47 text files.
+      43 unique files.
        5 files ignored.
 
-github.com/AlDanial/cloc v 1.98  T=0.02 s (2219.6 files/s, 267649.0 lines/s)
+github.com/AlDanial/cloc v 1.98  T=0.03 s (1473.9 files/s, 170289.5 lines/s)
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
 YAML                            18             90           1812           2526
-Bourne Shell                    21             37             24            210
-Markdown                         2             44              0            201
+Markdown                         3             46              0            221
+Bourne Shell                    22             37             24            212
 -------------------------------------------------------------------------------
-SUM:                            41            171           1836           2937
+SUM:                            43            173           1836           2959
 -------------------------------------------------------------------------------
 ```
 
