@@ -9,6 +9,8 @@ source ./setup_env.sh
 ```bash
 ./install_gitlab.sh
 ```
+## 🔒 Certs 
+set Environment variable YOUR\_DOMAIN
 ## 🔍 Get Password
 ```bash
 ./get_pw.sh

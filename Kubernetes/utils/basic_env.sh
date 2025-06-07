@@ -5,6 +5,7 @@ export BASIC_SETUP="$K8S_PLAYGROUND/basic_setup"
 export PROMETHEUS_PLAYGROUND="$K8S_PLAYGROUND/prometheus_and_grafana"
 export JENKINS_PLAYGROUND="$K8S_PLAYGROUND/jenkins"
 export INVENTORY="$ANSIBLE_PLAYGROUND/inventory"
+export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 
 # Usage: SCRIPTS $K8S_PLAYGROUND/basic_init
 SCRIPTS() {
