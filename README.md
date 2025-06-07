@@ -17,6 +17,7 @@ Basically, this project depends on Helm Charts. Although Some parts are deployed
 - **utils/**: Utility scripts for setting up the environment and managing Kubernetes-related tasks.
 - **metallb/**: Basic setup for metallb
 - **gitlab/**: Contains GitLab installation script via helm
+- **kroki/**: Contains Kroki visualizer for Markdown
 #### Known Errors
 *Ansible initialized k8s cluster is unstable. There would be some permissions problem while making initial profiles; any pull requests are welcomed.*
 #### Shortcuts
@@ -61,8 +62,6 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 ```bash
 Kubernetes/
 ├── ansible
-│   ├── README
-│   ├── TODO
 │   ├── assets
 │   │   └── yaml
 │   │       ├── install_cilium.yaml
@@ -73,21 +72,28 @@ Kubernetes/
 │   │       └── vault.yaml
 │   ├── inventory
 │   │   └── kube_inventory
-│   └── scripts
-│       └── init_k8s_with_ansible.sh
+│   ├── README
+│   ├── scripts
+│   │   └── init_k8s_with_ansible.sh
+│   └── TODO
 ├── basic_setup
 │   └── scripts
-│       ├── init.sh
 │       ├── init_control_plane.sh
+│       ├── init.sh
 │       ├── install_cilium.sh
 │       ├── install_helm.sh
 │       ├── print_join_command.sh
 │       └── untaint.sh
 ├── gitlab
+│   ├── assets
+│   │   └── yaml
+│   │       ├── gitlab-runner-deployment.yaml
+│   │       └── values.yaml
 │   └── scripts
-│       ├── README.md
+│       ├── create_certs.sh
 │       ├── get_pw.sh
 │       ├── install_gitlab.sh
+│       ├── README.md
 │       └── setup_env.sh
 ├── jenkins
 │   ├── assets
@@ -96,6 +102,9 @@ Kubernetes/
 │   └── scripts
 │       ├── get_pw.sh
 │       └── install_jenkins.sh
+├── kroki
+│   └── scripts
+│       └── install_kroki.sh
 ├── kube_ops_view
 │   └── scripts
 │       └── install_kube_ops_view.sh
@@ -106,8 +115,8 @@ Kubernetes/
 │   │       ├── loki-grafana.yaml
 │   │       ├── loki.yaml
 │   │       ├── persistence
-│   │       │   ├── pv.yaml
 │   │       │   ├── pvc.yaml
+│   │       │   ├── pv.yaml
 │   │       │   └── storageclass.yaml
 │   │       └── schemaconfig.yaml
 │   └── scripts
@@ -140,7 +149,7 @@ Kubernetes/
 └── utils
     └── basic_env.sh
 
-35 directories, 45 files
+39 directories, 49 files
 
 ```
 #### 🗨️ Total Code Lines
