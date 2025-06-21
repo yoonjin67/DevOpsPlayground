@@ -166,20 +166,21 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 #### 🗨️ Total Code Lines
 
 ```bash
-      47 text files.
-      43 unique files.
+      56 text files.
+      52 unique files.
        5 files ignored.
 
-github.com/AlDanial/cloc v 1.98  T=0.03 s (1473.9 files/s, 170289.5 lines/s)
+github.com/AlDanial/cloc v 1.98  T=0.02 s (2577.6 files/s, 335580.0 lines/s)
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-YAML                            18             90           1812           2526
-Markdown                         3             46              0            221
-Bourne Shell                    22             37             24            212
+YAML                            24            220           2289           3649
+Markdown                         3             48              0            260
+Bourne Shell                    25             38             23            243
 -------------------------------------------------------------------------------
-SUM:                            43            173           1836           2959
+SUM:                            52            306           2312           4152
 -------------------------------------------------------------------------------
+
 ```
 
 
