@@ -9,5 +9,5 @@ helm upgrade --install gitlab gitlab/gitlab \
   --set certmanager-issuer.email=$YOUR_EMAIL \
   --set gitlab.gitlab-rails.initialRootEmail=$YOUR_EMAIL \
   -f $(YAML $GITLAB_PLAYGROUND)/values.yaml \
-  --namespace gitlab
+  --namespace gitlab \
   --set gitlab-runner.runnerToken=$1
