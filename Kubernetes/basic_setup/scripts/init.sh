@@ -10,12 +10,13 @@ apt update -y
 
 sudo swapoff -a
 sudo sed -i.bak '/\sswap\s/ s/^/# /' /etc/fstab
+echo br_netfilter >> /etc/modules-load.d/modules.conf
 
 apt install -y apt-transport-https ca-certificates curl gpg
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | tee /etc/apt/sources.list.d/kubernetes_v1.32.list
 apt update
-apt install -y kubelet kubectl containerd
+apt install -y kubelet kubectl containerd kubeadm
 
 sudo mkdir -p /etc/containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml > /dev/null

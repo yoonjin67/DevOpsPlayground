@@ -60,7 +60,7 @@ global:
     allowClusterRoles: true
   ## https://docs.gitlab.com/charts/charts/globals#configure-host-settings
   hosts:
-    domain: example.com
+    domain: yoonjin2.kr
     hostSuffix:
     https: true
     externalIP:
@@ -202,7 +202,7 @@ global:
         internalPort: 8076
     tls:
       enabled: false
-      # secretName:
+      verify: false
 
   praefect:
     enabled: false
@@ -228,6 +228,8 @@ global:
         internalPort: 8076
     tls:
       enabled: false
+      verify: false
+
       # secretName:
 
   ## https://docs.gitlab.com/charts/charts/globals#configure-minio-settings
@@ -623,7 +625,7 @@ global:
       apiExternalPort: 8153 # port for connections from the GitLab backend
     tls:
       enabled: false
-      verify: true
+      verify: false
       # secretName:
       # caSecretName:
 
@@ -669,6 +671,7 @@ global:
       # key:
     tls:
       enabled: false
+      verify: false
       # secretName:
     redis:
       cache:
@@ -814,6 +817,7 @@ global:
     # key:
     tls:
       enabled: false
+      verify: false
 
   ## https://docs.gitlab.com/charts/charts/globals#configure-webservice
   webservice:
@@ -974,12 +978,18 @@ nginx-ingress: &nginx-ingress
   tcpExternalConfig: "true"
   controller: &nginx-ingress-controller
     addHeaders:
-      Referrer-Policy: strict-origin-when-cross-origin
+      Referrer-Policy: no-referrer-when-downgrade
     config: &nginx-ingress-controller-config
       annotation-value-word-blocklist: "load_module,lua_package,_by_lua,location,root,proxy_pass,serviceaccount,{,},',\""
-      hsts: "true"
+      hsts: "false"
       hsts-include-subdomains: "false"
-      hsts-max-age: "63072000"
+      hsts-max-age: "0"
+      enable-cors: "true"
+      cors-allow-origin: "*"
+      cors-allow-methods: "GET, PUT, POST, DELETE, OPTIONS"
+      cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
+      cors-allow-credentials: "true"
+      cors-expose-headers: "Content-Length,Content-Range"
       server-name-hash-bucket-size: "256"
       use-http2: "true"
       ssl-ciphers: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4"
@@ -1021,6 +1031,12 @@ nginx-ingress: &nginx-ingress
       requests:
         cpu: 5m
         memory: 5Mi
+    enabled: true
+    service:
+      create: false
+    tls:
+      enabled: true
+      verify: false
   rbac:
     create: true
     # Needed for k8s 1.20 and 1.21
@@ -1329,13 +1345,14 @@ shared-secrets:
 ## Installation & configuration of gitlab/gitlab-runner
 ## See requirements.yaml for current version
 gitlab-runner:
-  certsSecretName: gitlab-runner-ca-cert
   tls:
     enabled: false
+    verify: false
   install: true
   rbac:
    create: true
   runners:
+    privileged: true
     locked: false
     # Set secret to an arbitrary value because the runner chart renders the gitlab-runner.secret template only if it is not empty.
     # The parent/GitLab chart overrides the template to render the actual secret name.
@@ -1343,20 +1360,49 @@ gitlab-runner:
     config: |
       [[runners]]
         [runners.kubernetes]
-        image = "ubuntu:22.04"
-        {{- if .Values.global.minio.enabled }}
+          namespace = "{{.Release.Namespace}}"
+          image = "ubuntu:22.04"
+          privileged = true
+
+          {{- if .Values.global.minio.enabled }}
+          tls_verify = "false"
+          {{ end }}
+
+          [[runners.kubernetes.volumes]]
+          name = "dind-socket"
+          empty_dir = { medium = "Memory" }
+
+          [[runners.kubernetes.init_containers]]
+          name = "wait-for-docker"
+          image = "docker:dind"
+          command = ["sh", "-c", "until docker info; do sleep 1; done;"]
+          volume_mounts = [
+            { name = "dind-socket", mount_path = "/var/run/docker.sock" }
+          ]
+          security_context = { privileged = true }
+
+          [[runners.kubernetes.service_containers]]
+          name = "dind"
+          image = "docker:dind"
+          privileged = true
+          command = ["/usr/local/bin/dockerd-entrypoint.sh"]
+          args = ["--host=tcp://0.0.0.0:2375", "--tls=false"]
+          volume_mounts = [
+            { name = "dind-socket", mount_path = "/var/run/docker.sock" }
+          ]
+
+        [[runners.environment]]
+        name = "DOCKER_HOST"
+        value = "tcp://localhost:2375"
+
+        [[runners.environment]]
+        name = "DOCKER_TLS_CERTDIR"
+        value = ""
+
         [runners.cache]
-          Type = "s3"
-          Path = "gitlab-runner"
+          Type = "cache"
           Shared = true
-          [runners.cache.s3]
-            ServerAddress = {{ include "gitlab-runner.cache-tpl.s3ServerAddress" . }}
-            BucketName = "runner-cache"
-            BucketLocation = "us-east-1"
-            Insecure = true
-        {{ end }}
-      cache:
-        secretName: gitlab-runner-ca-cert
+          Path = "gitlab-runner"
   podAnnotations:
     gitlab.com/prometheus_scrape: "true"
     gitlab.com/prometheus_port: 9252

@@ -17,6 +17,7 @@ Basically, this project depends on Helm Charts. Although Some parts are deployed
 - **utils/**: Utility scripts for setting up the environment and managing Kubernetes-related tasks.
 - **metallb/**: Basic setup for metallb
 - **gitlab/**: Contains GitLab installation script via helm
+- **letsencrypt/**: Contains LetsEncrypt installation
 - **kroki/**: Contains Kroki visualizer for Markdown
 #### Known Errors
 *Ansible initialized k8s cluster is unstable. There would be some permissions problem while making initial profiles; any pull requests are welcomed.*
@@ -60,8 +61,10 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 
 #### Directory Structure
 ```bash
-Kubernetes/
+.
 ├── ansible
+│   ├── README
+│   ├── TODO
 │   ├── assets
 │   │   └── yaml
 │   │       ├── install_cilium.yaml
@@ -72,28 +75,29 @@ Kubernetes/
 │   │       └── vault.yaml
 │   ├── inventory
 │   │   └── kube_inventory
-│   ├── README
-│   ├── scripts
-│   │   └── init_k8s_with_ansible.sh
-│   └── TODO
+│   └── scripts
+│       └── init_k8s_with_ansible.sh
 ├── basic_setup
 │   └── scripts
-│       ├── init_control_plane.sh
 │       ├── init.sh
+│       ├── init_control_plane.sh
 │       ├── install_cilium.sh
 │       ├── install_helm.sh
-│       ├── print_join_command.sh
-│       └── untaint.sh
+│       └── print_join_command.sh
 ├── gitlab
 │   ├── assets
 │   │   └── yaml
-│   │       ├── gitlab-runner-deployment.yaml
+│   │       ├── letsencrypt
+│   │       │   ├── certificate.yaml
+│   │       │   └── clusterissuer.yaml
+│   │       ├── runner.yaml
 │   │       └── values.yaml
 │   └── scripts
-│       ├── create_certs.sh
-│       ├── get_pw.sh
-│       ├── install_gitlab.sh
 │       ├── README.md
+│       ├── get_pw.sh
+│       ├── gitlab_reinstall_with_runner.sh
+│       ├── install_gitlab.sh
+│       ├── install_runner.sh
 │       └── setup_env.sh
 ├── jenkins
 │   ├── assets
@@ -103,23 +107,29 @@ Kubernetes/
 │       ├── get_pw.sh
 │       └── install_jenkins.sh
 ├── kroki
+│   ├── assets
+│   │   └── yaml
+│   │       ├── cluster-issuer.yaml
+│   │       └── values.yaml
 │   └── scripts
 │       └── install_kroki.sh
 ├── kube_ops_view
 │   └── scripts
 │       └── install_kube_ops_view.sh
-├── loki
-│   ├── assets
-│   │   └── yaml
-│   │       ├── grafana-configmap.yaml
-│   │       ├── loki-grafana.yaml
-│   │       ├── loki.yaml
-│   │       ├── persistence
-│   │       │   ├── pvc.yaml
-│   │       │   ├── pv.yaml
-│   │       │   └── storageclass.yaml
-│   │       └── schemaconfig.yaml
+├── letsencrypt
 │   └── scripts
+│       └── install.sh
+├── loki
+│   └── assets
+│       └── yaml
+│           ├── grafana-configmap.yaml
+│           ├── loki-grafana.yaml
+│           ├── loki.yaml
+│           ├── persistence
+│           │   ├── pv.yaml
+│           │   ├── pvc.yaml
+│           │   └── storageclass.yaml
+│           └── schemaconfig.yaml
 ├── metallb
 │   ├── scripts
 │   │   └── metallb_setup.sh
@@ -145,11 +155,12 @@ Kubernetes/
 │       └── install_prometheus.sh
 ├── tolerate_pod_allocation
 │   ├── README.md
-│   └── untaint.sh
+│   └── scripts
+│       └── untaint.sh
 └── utils
     └── basic_env.sh
 
-39 directories, 49 files
+44 directories, 54 files
 
 ```
 #### 🗨️ Total Code Lines

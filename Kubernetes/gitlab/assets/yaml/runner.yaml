@@ -1,0 +1,27 @@
+securityContext:
+  allowPrivilegeEscalation: true
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  privileged: true
+  capabilities:
+    drop: ["NET_BIND_SERVICE"]
+    add: []
+
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
+  fsGroup: 0
+
+rbac:
+  create: true
+  rules:
+    - apiGroups: ["policy"]
+      resources: ["podsecuritypolicies"]
+      verbs: ["use"]
+      resourceNames:
+        - privileged
+
+serviceAccount:
+  create: true
+  name: gitlab-ci-admin
+
