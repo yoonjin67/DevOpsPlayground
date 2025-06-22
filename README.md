@@ -268,6 +268,7 @@ This project demonstrates several key DevOps practices, including:
 ### Ongoing
 - **Loki as a metric**: Deployment of Loki is done, but Full ELK stack hasn't been deployed yet.
 - **Succint README**: README for each parts of these repositories should be done.
+- **Kroki as HTTPS**: Currently my GitLab uses https://kroki.io
 
 ---
 

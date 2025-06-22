@@ -11,7 +11,7 @@ spec:
     email: gg582@naver.com # <--- IMPORTANT: REPLACE THIS WITH YOUR ACTUAL EMAIL ADDRESS
     # Name of a Kubernetes Secret to store the ACME account private key. Cert-Manager will create this.
     privateKeySecretRef:
-      name: letsencrypt-prod-private-key
+      name: letsencrypt-prod-account-key
     # Define how Cert-Manager will solve challenges to prove domain ownership.
     solvers:
     - http01: # Use the HTTP-01 challenge type.
