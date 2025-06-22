@@ -53,32 +53,11 @@ kubectl annotate ingress gitlab-registry -n gitlab cert-manager.io/cluster-issue
 
 Each ingresses you want to certify with LetsEncrypt provider should be annotated.
 Also, be sure to port-forward each LetsEncrypt services' ports into 80.
-`
+```
 First LetsEncrypt Service <- 80
 Fist Certs created
 Second LetsEncrypt Service <- 80
 Second Certs Created
-`
-To See PlantUML, Click here.
-```plantuml
-@StartUML
-autonumber
-First --> ServicePort --> ExternalPort80 : Validation Request
-First <-- ServicePort <-- ExternalPort80 : Validation Responce
-
-/' Got Responce.
-Certified first target.
-Removing First Service.
-'/
-autonumber
-Second --> ServicePort --> ExternalPort80 : Validation Request
-Second <-- ServicePort <-- ExternalPort80 : Validation Response
-/' Got Responce.
-Certified second target.
-Removing second Service.
-...(etc)
-'/
-@EndUML
 ```
 
 
