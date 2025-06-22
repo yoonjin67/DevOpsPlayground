@@ -1,3 +1,5 @@
+gitlabUrl: https://your.url
+runnerRegistrationToken: "YOUR_TOKEN"
 securityContext:
   allowPrivilegeEscalation: true
   readOnlyRootFilesystem: false
@@ -11,17 +13,15 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
   fsGroup: 0
-
-rbac:
-  create: true
-  rules:
-    - apiGroups: ["policy"]
-      resources: ["podsecuritypolicies"]
-      verbs: ["use"]
-      resourceNames:
-        - privileged
-
+certmanager:
+  rbac:
+    create: true
+    rules:
+      - apiGroups: ["policy", ""]
+        resources: ["podsecuritypolicies", "secrets"]
+        verbs:     ["create", "get", "update", "delete", "list", "watch", "use"]
+        resourceNames:
+          - privileged
 serviceAccount:
   create: true
   name: gitlab-ci-admin
-

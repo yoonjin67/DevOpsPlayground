@@ -1,2 +1,4 @@
 ./Kubernetes/ansible/inventory
 ./Kubernetes/ansible/assets/yaml/vault.yaml
+./Kubernetes/gitlab/scripts/setup_env.sh
+./Kubernetes/gitlab/assets/yaml/runner.yaml

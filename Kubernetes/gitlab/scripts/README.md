@@ -7,7 +7,12 @@ source ./setup_env.sh
 ```
 ## ⚙️ Installation
 ```bash
-./install_gitlab.sh
+source ./install_gitlab.sh
+```
+### ⚙️ Install Runner
+```bash
+source ./install_runner.sh
+./setup_gitlab_admin.sh
 ```
 ## 🔒 Certs 
 set Environment variable YOUR\_DOMAIN

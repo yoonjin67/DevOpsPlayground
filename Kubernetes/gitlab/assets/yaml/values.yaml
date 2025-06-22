@@ -1348,7 +1348,7 @@ gitlab-runner:
   tls:
     enabled: false
     verify: false
-  install: true
+  install: false
   rbac:
    create: true
   runners:
@@ -1359,6 +1359,7 @@ gitlab-runner:
     secret: "nonempty"
     config: |
       [[runners]]
+        executor = "kubernetes"
         [runners.kubernetes]
           namespace = "{{.Release.Namespace}}"
           image = "ubuntu:22.04"
@@ -1371,6 +1372,12 @@ gitlab-runner:
           [[runners.kubernetes.volumes]]
           name = "dind-socket"
           empty_dir = { medium = "Memory" }
+          [[runners.kubernetes.volumes.host_path]]
+            name = "/mnt/data"
+            path = "/mnt/data"
+          [[runners.kubernetes.volumes.empty_dir]]
+            name = "data"
+            path = "Memory"
 
           [[runners.kubernetes.init_containers]]
           name = "wait-for-docker"

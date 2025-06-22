@@ -1,4 +1,4 @@
 #!/bin/bash
-export YOUR_DOMAIN=yoonjin2.kr
-export YOUR_EMAIL=gg582@naver.com
+export YOUR_DOMAIN=your.domain
+export YOUR_EMAIL=your@email.com
 export YOUR_PUBLIC_IP=""
