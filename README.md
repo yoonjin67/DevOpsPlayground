@@ -19,6 +19,9 @@ Basically, this project depends on Helm Charts. Although Some parts are deployed
 - **gitlab/**: Contains GitLab installation script via helm
 - **letsencrypt/**: Contains LetsEncrypt installation
 - **kroki/**: Contains Kroki visualizer for Markdown
+- **kube_ops_view/**: Contains kube-ops-view installation for visualizing nodes status
+- **nfs_setup/**: Contains basic NFS StorageClass setup script
+#### Notes
 #### Known Errors
 *Ansible initialized k8s cluster is unstable. There would be some permissions problem while making initial profiles; any pull requests are welcomed.*
 #### Shortcuts
@@ -62,128 +65,145 @@ export GITLAB_PLAYGROUND="$K8S_PLAYGROUND/gitlab"
 #### Directory Structure
 ```bash
 .
-├── ansible
-│   ├── README
-│   ├── TODO
-│   ├── assets
+├── Kubernetes
+│   ├── ansible
+│   │   ├── assets
+│   │   │   └── yaml
+│   │   │       ├── install_cilium.yaml
+│   │   │       ├── install_deps.yaml
+│   │   │       ├── setup_clusters.yaml
+│   │   │       ├── setup_control_plane.yaml
+│   │   │       ├── setup_workers.yaml
+│   │   │       └── vault.yaml
+│   │   ├── inventory
+│   │   │   └── kube_inventory
+│   │   ├── README
+│   │   ├── scripts
+│   │   │   └── init_k8s_with_ansible.sh
+│   │   └── TODO
+│   ├── basic_setup
+│   │   └── scripts
+│   │       ├── init_control_plane.sh
+│   │       ├── init.sh
+│   │       ├── install_cilium.sh
+│   │       ├── install_helm.sh
+│   │       └── print_join_command.sh
+│   ├── gitlab
+│   │   ├── assets
+│   │   │   └── yaml
+│   │   │       ├── letsencrypt
+│   │   │       │   ├── certificate.yaml
+│   │   │       │   └── clusterissuer.yaml
+│   │   │       ├── runner.yaml
+│   │   │       └── values.yaml
+│   │   └── scripts
+│   │       ├── get_pw.sh
+│   │       ├── install_gitlab.sh
+│   │       ├── install_runner.sh
+│   │       ├── README.md
+│   │       ├── setup_env.sh
+│   │       └── setup_gitlab_admin.sh
+│   ├── jenkins
+│   │   ├── assets
+│   │   │   └── yaml
+│   │   │       └── values.yaml
+│   │   └── scripts
+│   │       ├── get_pw.sh
+│   │       └── install_jenkins.sh
+│   ├── kroki
+│   │   ├── assets
+│   │   │   └── yaml
+│   │   │       ├── cluster-issuer.yaml
+│   │   │       └── values.yaml
+│   │   └── scripts
+│   │       └── install_kroki.sh
+│   ├── kube_ops_view
+│   │   └── scripts
+│   │       └── install_kube_ops_view.sh
+│   ├── letsencrypt
+│   │   └── scripts
+│   │       └── install.sh
+│   ├── loki
+│   │   └── assets
+│   │       └── yaml
+│   │           ├── grafana-configmap.yaml
+│   │           ├── loki-grafana.yaml
+│   │           ├── loki.yaml
+│   │           ├── persistence
+│   │           │   ├── pvc.yaml
+│   │           │   ├── pv.yaml
+│   │           │   └── storageclass.yaml
+│   │           └── schemaconfig.yaml
+│   ├── metallb
+│   │   ├── scripts
+│   │   │   └── metallb_setup.sh
 │   │   └── yaml
-│   │       ├── install_cilium.yaml
-│   │       ├── install_deps.yaml
-│   │       ├── setup_clusters.yaml
-│   │       ├── setup_control_plane.yaml
-│   │       ├── setup_workers.yaml
-│   │       └── vault.yaml
-│   ├── inventory
-│   │   └── kube_inventory
-│   └── scripts
-│       └── init_k8s_with_ansible.sh
-├── basic_setup
-│   └── scripts
-│       ├── init.sh
-│       ├── init_control_plane.sh
-│       ├── install_cilium.sh
-│       ├── install_helm.sh
-│       └── print_join_command.sh
-├── gitlab
-│   ├── assets
-│   │   └── yaml
-│   │       ├── letsencrypt
-│   │       │   ├── certificate.yaml
-│   │       │   └── clusterissuer.yaml
-│   │       ├── runner.yaml
-│   │       └── values.yaml
-│   └── scripts
-│       ├── README.md
-│       ├── get_pw.sh
-│       ├── gitlab_reinstall_with_runner.sh
-│       ├── install_gitlab.sh
-│       ├── install_runner.sh
-│       └── setup_env.sh
-├── jenkins
-│   ├── assets
-│   │   └── yaml
-│   │       └── values.yaml
-│   └── scripts
-│       ├── get_pw.sh
-│       └── install_jenkins.sh
-├── kroki
-│   ├── assets
-│   │   └── yaml
-│   │       ├── cluster-issuer.yaml
-│   │       └── values.yaml
-│   └── scripts
-│       └── install_kroki.sh
-├── kube_ops_view
-│   └── scripts
-│       └── install_kube_ops_view.sh
-├── letsencrypt
-│   └── scripts
-│       └── install.sh
-├── loki
-│   └── assets
-│       └── yaml
-│           ├── grafana-configmap.yaml
-│           ├── loki-grafana.yaml
-│           ├── loki.yaml
-│           ├── persistence
-│           │   ├── pv.yaml
-│           │   ├── pvc.yaml
-│           │   └── storageclass.yaml
-│           └── schemaconfig.yaml
-├── metallb
-│   ├── scripts
-│   │   └── metallb_setup.sh
-│   └── yaml
-│       └── pools
-│           ├── metallb_ip_pool.yaml
-│           └── metallb_l2_advertisement.yaml
-├── modify_cilium_policy
-│   └── basic_port_export
-│       └── assets
-│           └── yaml
-│               ├── export_port_from_cilium.yaml
-│               └── loki_ingress.yaml
-├── nfs_setup
-│   └── scripts
-│       ├── setup-master-helm.sh
-│       └── setup.sh
-├── prometheus_and_grafana
-│   └── scripts
-│       ├── add_incus_monitor.sh
-│       ├── add_secret.sh
-│       ├── get_pw.sh
-│       └── install_prometheus.sh
-├── tolerate_pod_allocation
-│   ├── README.md
-│   └── scripts
-│       └── untaint.sh
-└── utils
-    └── basic_env.sh
+│   │       └── pools
+│   │           ├── metallb_ip_pool.yaml
+│   │           └── metallb_l2_advertisement.yaml
+│   ├── modify_cilium_policy
+│   │   └── basic_port_export
+│   │       └── assets
+│   │           └── yaml
+│   │               ├── export_port_from_cilium.yaml
+│   │               └── loki_ingress.yaml
+│   ├── nfs_setup
+│   │   └── scripts
+│   │       ├── setup-master-helm.sh
+│   │       └── setup.sh
+│   ├── prometheus_and_grafana
+│   │   └── scripts
+│   │       ├── add_incus_monitor.sh
+│   │       ├── add_secret.sh
+│   │       ├── get_pw.sh
+│   │       └── install_prometheus.sh
+│   ├── tolerate_pod_allocation
+│   │   ├── README.md
+│   │   └── scripts
+│   │       └── untaint.sh
+│   └── utils
+│       └── basic_env.sh
+└── README.md
 
-44 directories, 54 files
+45 directories, 55 files
 
 ```
 #### 🗨️ Total Code Lines
-
+##### Including this README.md
 ```bash
       56 text files.
       52 unique files.
        5 files ignored.
 
-github.com/AlDanial/cloc v 1.98  T=0.02 s (2577.6 files/s, 335580.0 lines/s)
+github.com/AlDanial/cloc v 1.98  T=0.03 s (1909.2 files/s, 248751.8 lines/s)
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-YAML                            24            220           2289           3649
-Markdown                         3             48              0            260
-Bourne Shell                    25             38             23            243
+YAML                            24            217           2289           3659
+Markdown                         3             49              0            267
+Bourne Shell                    25             37             23            234
 -------------------------------------------------------------------------------
-SUM:                            52            306           2312           4152
+SUM:                            52            303           2312           4160
 -------------------------------------------------------------------------------
 
 ```
+##### Only Sources
+```bash
+      54 text files.
+      51 unique files.
+       3 files ignored.
 
-
+github.com/AlDanial/cloc v 1.98  T=0.03 s (1757.8 files/s, 224097.9 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+YAML                            24            217           2289           3659
+Bourne Shell                    25             37             23            234
+Markdown                         2              2              0             41
+-------------------------------------------------------------------------------
+SUM:                            51            256           2312           3934
+-------------------------------------------------------------------------------
+```
 
 ---
 
@@ -204,8 +224,8 @@ This project demonstrates several key DevOps practices, including:
    - A script for exporting ports from Cilium has been created, but the final integration is still in progress.
   
 ### 4. **Continuous Integration/Continuous Deployment (CI/CD)**
-   - While not fully integrated, there are existing scripts that lay the foundation for CI/CD pipelines for deploying GitLab, Prometheus, and other services. This will help automate the building, testing, and deployment processes.
-   - In-progress GitLab configuration and storage setup will eventually automate containerized CI/CD workflows.
+   - There are existing scripts that lay the foundation for CI/CD pipelines for deploying GitLab, Prometheus, and other services. This will help automate the building, testing, and deployment processes. 
+   - GitLab configuration and storage setup will eventually automate containerized CI/CD workflows.
 
 ### 5. **Prometheus and Grafana Monitoring Setup**
    - Setup scripts for installing Prometheus and Grafana, enabling real-time monitoring of Kubernetes clusters and applications.
@@ -224,11 +244,13 @@ This project demonstrates several key DevOps practices, including:
 ## 🛠 Technologies Practiced
 
 - **Kubernetes**: Cluster orchestration, scaling, and management.
-- **Ansible**: Infrastructure automation and deployment via YAML playbooks.
-- **Cilium**: Advanced networking and security for Kubernetes.
-- **Helm**: Package manager for Kubernetes applications.
+- **Ansible**: Infrastructure automation via YAML playbooks.
+- **Cilium**: Network Fabric for Kubernetes
+- **Helm**: Package manager for Kubernetes applications; Including customized Values for each charts
 - **Prometheus & Grafana**: Monitoring and observability stack.
 - **GitLab**: CI/CD and version control system.
+- **LetsEncrypt Certification**: Certified personal GitLab via LetsEncrypt
+- **Dynamic Provisioning**: Setted up Dynamic Provisioning by NFS.
 - **Vault**: Secrets management for Kubernetes and other sensitive data.
   
 ---
@@ -240,17 +262,21 @@ This project demonstrates several key DevOps practices, including:
 - **Kubernetes Setup**: Control plane setup and node management scripts.
 - **Cilium Networking Setup**: CNI plugin installation and port export policy.
 - **Prometheus & Grafana**: Installation scripts for cluster monitoring.
+- **Full CI/CD Pipeline**: GitLab Runner CI/CD for automatic build and deployment.
 - **Ansible Playbooks**: Defined and tested deployment scripts for cluster configuration.
 - **GitLab Configuration**: Setting up GitLab with persistent storage and proper configuration for large-scale deployments.
-- **Cilium Port Export**: Finalizing the Cilium policy export for security and networking.
 ### Ongoing
-- **Full CI/CD Pipeline**: Still in the process of integrating CI/CD for automatic build and deployment.
+- **Loki as a metric**: Deployment of Loki is done, but Full ELK stack hasn't been deployed yet.
+- **Succint README**: README for each parts of these repositories should be done.
 
 ---
 
 ## 📝 Future Improvements
 
 - Completion of Cilium export logic to allow more refined Kubernetes networking and security configurations.
+- Currently these sources are based on Ubuntu 24.04 LTS, Kubernetes v1.32.5. RHEL-based distributions audit and restrict unprotected service deployments.
+- ELK stacks should be setted up.
+- Cilium Networking Policies are strong enough to control complex services.
 
 ---
 
