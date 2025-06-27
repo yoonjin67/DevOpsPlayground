@@ -1,0 +1,61 @@
+# Metricbeat Helm Chart values.
+
+# Elasticsearch connection settings.
+elasticsearch:
+  # List of Elasticsearch hosts (service name and port).
+  hosts: ["elasticsearch-master:9200"]
+  # Authentication using a Kubernetes Secret.
+  # The chart will read 'username' and 'password' from this secret.
+  auth:
+    secretName: elasticsearch-master-credentials
+
+# Kibana setup configuration.
+kibana:
+  # Kibana service host. Replace <YOUR_KIBANA_SERVICE_NAME> with your actual Kibana service name.
+  host: "<YOUR_KIBANA_SERVICE_NAME>:5601"
+  # Protocol for Kibana connection (http or https).
+  protocol: "http"
+
+# Metricbeat modules configuration.
+metricbeatConfig:
+  metricbeat.yml: |
+    metricbeat.modules:
+    - module: system
+      metricsets: ["network", "cpu", "memory", "load", "diskio", "fs", "process"]
+      period: 10s
+      data_stream:
+        namespace: default
+
+    - module: kubernetes
+      metricsets: ["node", "pod", "container", "system", "volume"]
+      period: 10s
+      # Kubernetes service for kube-state-metrics (only if deployed).
+      hosts: ["kube-state-metrics:8080"]
+      data_stream:
+        namespace: default
+
+# Resource requests and limits for Metricbeat pods.
+resources:
+  requests:
+    cpu: "50m"
+    memory: "128Mi"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+
+# RBAC (Role-Based Access Control) settings for Metricbeat.
+rbac:
+  create: true
+  clusterWide: true # Allow Metricbeat to collect cluster-wide metrics.
+
+# Use host network for Metricbeat pods.
+hostNetwork: true
+
+# Automatic setup tasks (dashboards, ILM, templates) in Kibana/Elasticsearch.
+setup:
+  dashboards:
+    enabled: true
+  ilm:
+    enabled: auto
+  template:
+    enabled: auto
